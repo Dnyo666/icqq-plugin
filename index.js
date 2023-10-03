@@ -1,10 +1,12 @@
 import "./model/cmd.js"
-import { event } from "./model/cmd.js"
+import fetch from "node-fetch"
 import { createClient } from "icqq"
+import _Yaml from "./model/yaml.js"
+import { execSync } from "child_process"
+import { event } from "./model/cmd.js"
+import { update } from "../other/update.js"
 import common from "../../lib/common/common.js"
 import { _path, sign_api_addr, data_dir } from "./model/config.js"
-import fetch from "node-fetch"
-import _Yaml from "./model/yaml.js"
 
 /** 登录验证使用到~ */
 let login = {}
@@ -26,7 +28,12 @@ export class ICQQ_ extends plugin {
                     reg: /^#QQ账号((启用|禁用|删除).+)?$/i,
                     fnc: "delQQ",
                     permission: "master"
-                }
+                },
+                {
+                    reg: /^#ICQQ(强制)?更新(日志)?$/gi,
+                    fnc: "update",
+                    permission: "master"
+                },
             ]
         })
     }
@@ -202,6 +209,28 @@ export class ICQQ_ extends plugin {
         e.reply(`${whitelist}\n\n${blacklist}\n\n${tips}`)
         return true
     }
+
+    async update(e) {
+        let new_update = new update()
+        new_update.e = e
+        new_update.reply = this.reply
+        const name = "icqq-plugin"
+        if (e.msg.includes("更新日志")) {
+            if (new_update.getPlugin(name)) {
+                this.e.reply(await new_update.getLog(name))
+            }
+        } else {
+            if (new_update.getPlugin(name)) {
+                if (this.e.msg.includes('强制'))
+                    execSync('git reset --hard', { cwd: `${process.cwd()}/plugins/${name}/` })
+                await new_update.runUpdate(name)
+                if (new_update.isUp)
+                    setTimeout(() => new_update.restart(), 2000)
+            }
+        }
+        return true
+    }
+
 
     async device() {
         const { bot, data, verify, number } = login[this.e.user_id]

@@ -73,6 +73,10 @@ git clone --depth=1 https://github.com/Zyy955/icqq-plugin ./plugins/icqq-plugin
 #QQ账号禁用+QQ号
 #QQ账号删除+QQ号
 #QQ账号启用+QQ号
+
+#ICQQ更新
+#ICQQ强制更新
+#ICQQ更新日志
 ```
 
 #### 适配进度
