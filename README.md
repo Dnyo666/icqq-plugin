@@ -84,6 +84,7 @@ git clone --depth=1 https://github.com/Zyy955/icqq-plugin ./plugins/icqq-plugin
 - [√] 基础消息收发
 - [ ] 主动消息
 - [ ] 适配QQ登录QQ时，剩余两种获取`ticket`方式
+- [√] 适配`#椰奶状态`，由于本体的某个参数特殊性，非`pro`也显示全部bot~
 
 
 ## 爱发电

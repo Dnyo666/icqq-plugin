@@ -87,6 +87,17 @@ export async function event(bot) {
     /** 上线成功 */
     bot.on("system.online", async e => {
         logger.info(`Bot：${bot.nickname}(${e.self_id})登录成功！正在加载资源...`)
+
+        /** 椰奶状态pro */
+        if (!Bot?.adapter) {
+            Bot.adapter = [Bot.uin]
+            Bot.adapter.push(e.self_id)
+        } else {
+            Bot.adapter.push(e.self_id)
+            /** 去重防止断连后出现多个重复的id */
+            Bot.adapter = Array.from(new Set(Bot.adapter.map(JSON.stringify))).map(JSON.parse)
+        }
+        Bot[e.self_id] = bot
     })
     /** 监听下线事件 */
     bot.on("system.offline", async e => {

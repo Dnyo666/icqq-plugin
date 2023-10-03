@@ -159,6 +159,7 @@ export class ICQQ_ extends plugin {
     }
 
     async delQQ(e) {
+        if (e.sub_type !== "friend") return e.reply("请私聊操作")
         /** 先检查配置是否存在此账号 */
         const config = new _Yaml(_path + "/config.yaml")
         const accountList = await config.get("account")
@@ -206,7 +207,7 @@ export class ICQQ_ extends plugin {
         whitelist = `已启用账号：\n${whitelist.join('\n')}`
         blacklist = `已禁用账号：\n${blacklist.join('\n')}`
         const tips = "启用账号：#QQ账号启用123456789\n禁用账号：#QQ账号禁用123456789\n删除账号：#QQ账号删除123456789\n\n温馨提示：禁用、删除指定账号后需要重新登陆方可生效~"
-        e.reply(`${whitelist}\n\n${blacklist}\n\n${tips}`)
+        e.reply(`${whitelist}\n\n${blacklist}\n\n${tips}`, true)
         return true
     }
 

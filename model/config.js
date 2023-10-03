@@ -8,6 +8,13 @@ if (!fs.existsSync(_path + "/config.yaml")) {
     fs.copyFileSync(_path + "/defSet/config.yaml", _path + "/config.yaml")
 }
 
+/** 椰奶椰奶！ */
+if (fs.existsSync("./plugins/yenai-plugin") && !fs.existsSync("./plugins/QQGuild-plugin")) {
+    const yenai_plugin = (await import("../plugins/yenai-plugin.js")).default
+    await yenai_plugin.yenai()
+}
+
+
 const cfg = Yaml.parse(fs.readFileSync(_path + "/config.yaml", "utf8"))
 const sign_api_addr = String(cfg.sign_api_addr)
 const data_dir = process.cwd() + "/data/icqq"
