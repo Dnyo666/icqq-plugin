@@ -2,7 +2,7 @@ import icqq from "./loader.js"
 import login from "./login.js"
 import { createClient } from "icqq"
 import { sign_api_addr, cfg, data_dir } from "./config.js"
-import pluginsLoader from '../../../lib/plugins/loader.js'
+import pluginsLoader from "../../../lib/plugins/loader.js"
 
 /** 加载机器人~ */
 if (cfg) await parameter(cfg)
@@ -74,19 +74,35 @@ async function parameter(cfg) {
 export async function event(bot) {
     /** 监听消息 */
     bot.on("message", async e => {
-        await icqq.myFunction.call(pluginsLoader, e, bot)
+        await icqq.deal.call(pluginsLoader, e, bot)
     })
     /** 监听群聊消息 */
     bot.on("notice", async e => {
-        await icqq.myFunction.call(pluginsLoader, e, bot)
+        await icqq.deal.call(pluginsLoader, e, bot)
     })
     /** 监听群聊消息 */
     bot.on("request", async e => {
-        await icqq.myFunction.call(pluginsLoader, e, bot)
+        await icqq.deal.call(pluginsLoader, e, bot)
     })
     /** 上线成功 */
     bot.on("system.online", async e => {
         logger.info(`Bot：${bot.nickname}(${e.self_id})登录成功！正在加载资源...`)
+
+        /** 加载参数用于主动消息~ */
+        const entries = bot.gl.entries()
+        for (let [key, value] of entries) {
+            key = `qq_${key}`
+            value.uin = e.self_id
+            Bot.gl.set(key, value)
+        }
+
+        /** 加载参数用于主动消息~ */
+        const Entries = bot.fl.entries()
+        for (let [key, value] of Entries) {
+            key = `qq_${key}`
+            value.uin = e.self_id
+            Bot.fl.set(key, value)
+        }
 
         /** 椰奶状态pro */
         if (!Bot?.adapter) {

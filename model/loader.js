@@ -6,12 +6,12 @@ import Runtime from '../../../lib/plugins/runtime.js'
 /** 备份原来的this */
 let old
 
-class icqq {
+export default new class icqq {
     constructor() {
         old = this
     }
 
-    async myFunction(e, bot) {
+    async deal(e, bot) {
         Object.defineProperty(e, 'bot', {
             value: bot
         })
@@ -147,7 +147,7 @@ class icqq {
 
         if (config.groupGlobalCD && this.groupGlobalCD[e.group_id]) {
             return false
-        } 
+        }
         if (config.singleCD && this.singleCD[`${e.group_id}.${e.user_id}`]) {
             return false
         }
@@ -166,6 +166,3 @@ class icqq {
         return true
     }
 }
-
-
-export default new icqq()
