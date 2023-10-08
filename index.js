@@ -174,14 +174,20 @@ export class ICQQ_ extends plugin {
         if (accountList && Array.isArray(accountList)) {
             for (let i of accountList) {
                 if (!i) continue
-                if (i.trim().split(':')[2] == msg) account = i; break
+                if (i.trim().split(':')[2] == msg) {
+                    account = i
+                    break
+                }
             }
         }
 
         if (disabletList && Array.isArray(disabletList)) {
             for (let i of disabletList) {
                 if (!i) continue
-                if (i.trim().split(':')[2] == msg) disable = i; break
+                if (i.trim().split(':')[2] == msg) {
+                    disable = i
+                    break
+                }
             }
         }
 
