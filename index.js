@@ -3,7 +3,6 @@ import fetch from "node-fetch"
 import { createClient } from "icqq"
 import _Yaml from "./model/yaml.js"
 import { execSync } from "child_process"
-import { event } from "./model/cmd.js"
 import { update } from "../other/update.js"
 import common from "../../lib/common/common.js"
 import { _path, sign_api_addr, data_dir } from "./model/config.js"
@@ -149,12 +148,52 @@ export class ICQQ_ extends plugin {
         /** 登录 */
         await bot.login(account, password)
 
-        /** 监听事件 */
-        await event(bot)
-
+        /** 监听消息 */
+        bot.on("message", async e => {
+            await icqq.deal.call(pluginsLoader, e, bot)
+        })
+        /** 监听群聊消息 */
+        bot.on("notice", async e => {
+            await icqq.deal.call(pluginsLoader, e, bot)
+        })
+        /** 监听群聊消息 */
+        bot.on("request", async e => {
+            await icqq.deal.call(pluginsLoader, e, bot)
+        })
         /** 上线成功 */
-        bot.on("system.online", async data => {
-            await e.reply(`${data.self_id}：登录成功~`, true)
+        bot.on("system.online", async e => {
+            logger.info(`Bot：${bot.nickname}(${e.self_id})登录成功！正在加载资源...`)
+
+            /** 加载参数用于主动消息~ */
+            const entries = bot.gl.entries()
+            for (let [key, value] of entries) {
+                key = `qq_${key}`
+                value.uin = e.self_id
+                Bot.gl.set(key, value)
+            }
+
+            /** 加载参数用于主动消息~ */
+            const Entries = bot.fl.entries()
+            for (let [key, value] of Entries) {
+                key = `qq_${key}`
+                value.uin = e.self_id
+                Bot.fl.set(key, value)
+            }
+
+            /** 椰奶状态pro */
+            if (!Bot?.adapter) {
+                Bot.adapter = [Bot.uin]
+                Bot.adapter.push(e.self_id)
+            } else {
+                Bot.adapter.push(e.self_id)
+                /** 去重防止断连后出现多个重复的id */
+                Bot.adapter = Array.from(new Set(Bot.adapter.map(JSON.stringify))).map(JSON.parse)
+            }
+            Bot[e.self_id] = bot
+        })
+        /** 监听下线事件 */
+        bot.on("system.offline", async e => {
+            logger.error(`Bot：${nickname}(${e.self_id})掉线了...`)
         })
     }
 

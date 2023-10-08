@@ -152,16 +152,16 @@ export default new class icqq {
             return false
         }
 
-        // let { msgThrottle } = this
+        let { msgThrottle } = this
 
-        // let msgId = e.user_id + ':' + e.raw_message
-        // if (msgThrottle[msgId]) {
-        //     return false
-        // }
-        // msgThrottle[msgId] = true
-        // setTimeout(() => {
-        //     delete msgThrottle[msgId]
-        // }, 0)
+        let msgId = e.user_id + ':' + e.raw_message
+        if (msgThrottle[msgId]) {
+            return false
+        }
+        msgThrottle[msgId] = true
+        setTimeout(() => {
+            delete msgThrottle[msgId]
+        }, 50)
 
         return true
     }
