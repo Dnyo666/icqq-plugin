@@ -7,6 +7,9 @@ import common from "../../../lib/common/common.js"
 import { sign_api_addr, cfg, data_dir } from "./config.js"
 import pluginsLoader from "../../../lib/plugins/loader.js"
 
+/** 保存全部Bot */
+const allBot = []
+
 /** 加载机器人~ */
 if (cfg) await parameter(cfg)
 
@@ -70,29 +73,33 @@ async function parameter(cfg) {
         bot.on("system.login.error", async e => {
             /** 产生错误跳过此账号 */
             onlineSuccess = true
-            const notice = `发生错误\nBot：${bot.qq}\n状态码：${e.code}\n错误原因：${e.message}`
+            const time = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '')
+            const notice = `发生错误\n状态码：${e.code}\nBot：${bot.qq}\n时间：${time}\n错误原因：${e.message}`
             await common.relpyPrivate(config.masterQQ[0], notice)
             await logger.error(notice)
         })
 
         /** 监听消息 */
         bot.on("message", async e => {
-            await common.sleep(lodash.random(200, 500))
+            await common.sleep(lodash.random(50, 200))
             await icqq.deal.call(pluginsLoader, e, bot)
         })
         /** 监听群聊消息 */
         bot.on("notice", async e => {
-            await common.sleep(lodash.random(200, 500))
+            await common.sleep(lodash.random(50, 200))
             await icqq.deal.call(pluginsLoader, e, bot)
         })
         /** 监听群聊消息 */
         bot.on("request", async e => {
-            await common.sleep(lodash.random(200, 500))
+            await common.sleep(lodash.random(50, 200))
             await icqq.deal.call(pluginsLoader, e, bot)
         })
         /** 上线成功 */
         bot.on("system.online", async e => {
-            const notice = `Bot：${bot.nickname}(${e.self_id})登录成功...`
+            /** 存一下，等下通知给主人~ */
+            allBot.push(bot.nickname + ":" + e.self_id)
+            const time = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '')
+            const notice = `时间：${time}\nBot：${bot.nickname}(${e.self_id})登录成功...`
             logger.info(`${notice}正在加载资源...`)
 
             /** 加载参数用于主动消息~ */
@@ -135,9 +142,13 @@ async function parameter(cfg) {
 
         /** 循环等待上线成功 */
         while (!onlineSuccess) {
-            await common.sleep(3000)
+            await common.sleep(1000)
         }
     }
+    const time = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '')
+    const notice = `时间：${time}\n全部Bot数量：${cfg.account.length}\n登录成功数量：${allBot.length}\n\n`
+    await common.relpyPrivate(config.masterQQ[0], `${notice}${allBot.join('\n')}`)
+    allBot.length = 0
 }
 
 

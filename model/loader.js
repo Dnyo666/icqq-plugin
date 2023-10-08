@@ -155,14 +155,13 @@ export default new class icqq {
         let { msgThrottle } = this
 
         let msgId = e.user_id + ':' + e.raw_message
-        if (msgThrottle[msgId]) {
+        if (msgThrottle[msgId] && /更新|重启|关机/.test(e.raw_message)) {
             return false
         }
         msgThrottle[msgId] = true
         setTimeout(() => {
             delete msgThrottle[msgId]
-        }, 50)
-
+        }, lodash.random(100, 500))
         return true
     }
 }
