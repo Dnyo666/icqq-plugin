@@ -38,7 +38,7 @@ export class ICQQ_ extends plugin {
     }
 
     async qq(e) {
-        const cfg = e.msg.replace(/#QQ|账号|登录|启用|\+/g, "").replace(/：/g, ":").trim().split(':')
+        const cfg = e.msg.replace(/#QQ|账号|登录|启用|\+/gi, "").replace(/：/g, ":").trim().split(':')
 
         /** 过滤自身消息 */
         const ignore_self = Number(cfg[0])
