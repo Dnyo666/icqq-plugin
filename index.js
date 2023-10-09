@@ -58,7 +58,7 @@ export class ICQQ_ extends plugin {
             for (let i of accountList) {
                 const arr = i.trim().split(':')
                 if (arr[2] == account) {
-                    return e.reply(`账号已存在，请先执行「#删除${account}」`)
+                    return e.reply(`账号已存在，请先执行「#QQ账号删除${account}」`)
                 }
             }
         }
@@ -208,7 +208,7 @@ export class ICQQ_ extends plugin {
 
         let account
         let disable
-        const msg = e.msg.replace(/#QQ账号|启用|禁用|删除/g, "")
+        const msg = e.msg.replace(/#QQ账号|启用|禁用|删除/ig, "")
 
         if (accountList && Array.isArray(accountList)) {
             for (let i of accountList) {
@@ -231,20 +231,21 @@ export class ICQQ_ extends plugin {
         }
 
         if (e.msg.includes("启用")) {
-            if (!disable) return e.reply("没有这个账号~", true)
+            if (!disable) return e.reply(`未找到账号${msg}~`, true)
             config.delVal("disable", disable)
             config.addVal("account", disable)
             e.msg = "#QQ账号启用" + disable
             await this.qq(e)
         }
         else if (e.msg.includes("禁用")) {
-            if (!account) return e.reply("没有这个账号~", true)
+            if (!account) return e.reply(`未找到账号${msg}~`, true)
             config.delVal("account", account)
             config.addVal("disable", account)
         }
         else if (e.msg.includes("删除")) {
-            if (!account) return e.reply("没有这个账号~", true)
-            config.delVal("account", account)
+            if (!account && !disable) return e.reply(`未找到账号${msg}~`, true)
+            if (account)  config.delVal("account", account)
+            if (disable)  config.delVal("disable", disable)
         }
 
         let whitelist = await config.get("account") || []
