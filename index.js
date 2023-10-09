@@ -1,5 +1,6 @@
 import "./model/cmd.js"
 import fetch from "node-fetch"
+import icqq from "./loader.js"
 import { createClient } from "icqq"
 import _Yaml from "./model/yaml.js"
 import { execSync } from "child_process"
