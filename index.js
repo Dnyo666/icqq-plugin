@@ -6,6 +6,7 @@ import _Yaml from "./model/yaml.js"
 import { execSync } from "child_process"
 import { update } from "../other/update.js"
 import common from "../../lib/common/common.js"
+import pluginsLoader from "../../lib/plugins/loader.js"
 import { _path, sign_api_addr, data_dir } from "./model/config.js"
 
 /** 登录验证使用到~ */
